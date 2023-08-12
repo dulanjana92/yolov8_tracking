@@ -83,15 +83,7 @@ def run(args):
     )
 
     yolo.add_callback('on_predict_start', partial(on_predict_start, persist=True))
-  
-    m = get_yolo_inferer()
-    model = m(
-        model=args.yolo_model,
-        device=yolo.predictor.device,
-        args=yolo.predictor.args
-    )
-    yolo.predictor.model = model
-
+ 
     # store custom args in predictor
     yolo.predictor.custom_args = args
     print(f'Working up to this point')

@@ -79,55 +79,51 @@ def run(args):
         project=args.project,
         name=args.name,
         classes=args.classes,
-        imgsz=args.imgsz
+        imgsz=args.imgsz,
+        save_dir=False
     )
 
     yolo.add_callback('on_predict_start', partial(on_predict_start, persist=True))
-
-    if 'yolov8' not in str(args.yolo_model):
-        # replace yolov8 model
-        m = get_yolo_inferer(args.yolo_model)
-        model = m(
-            model=args.yolo_model,
-            device=yolo.predictor.device,
-            args=yolo.predictor.args
-        )
-        yolo.predictor.model = model
+  
+    m = get_yolo_inferer()
+    model = m(
+        model=args.yolo_model,
+        device=yolo.predictor.device,
+        args=yolo.predictor.args
+    )
+    yolo.predictor.model = model
 
     # store custom args in predictor
     yolo.predictor.custom_args = args
 
     for frame_idx, r in enumerate(results):
+        print(r)
+        #if r.boxes.data.shape[1] == 7:
 
-        if r.boxes.data.shape[1] == 7:
+        if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
+            p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')
+            yolo.predictor.mot_txt_path = p
+        
+        if args.save_mot:
+            write_mot_results(
+                yolo.predictor.mot_txt_path,
+                r,
+                frame_idx,
+            )
 
-            if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
-                p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')
-                yolo.predictor.mot_txt_path = p
-            elif 'MOT16' or 'MOT17' or 'MOT20' in args.source:
-                p = yolo.predictor.save_dir / 'mot' / (Path(args.source).parent.name + '.txt')
-                yolo.predictor.mot_txt_path = p
-
-            if args.save_mot:
-                write_mot_results(
-                    yolo.predictor.mot_txt_path,
-                    r,
-                    frame_idx,
+        if args.save_id_crops:
+            for d in r.boxes:
+                print('args.save_id_crops', d.data)
+                save_one_box(
+                    d.xyxy,
+                    r.orig_img.copy(),
+                    file=(
+                        yolo.predictor.save_dir / 'crops' /
+                        str(int(d.cls.cpu().numpy().item())) /
+                        str(int(d.id.cpu().numpy().item())) / f'{frame_idx}.jpg'
+                    ),
+                    BGR=True
                 )
-
-            if args.save_id_crops:
-                for d in r.boxes:
-                    print('args.save_id_crops', d.data)
-                    save_one_box(
-                        d.xyxy,
-                        r.orig_img.copy(),
-                        file=(
-                            yolo.predictor.save_dir / 'crops' /
-                            str(int(d.cls.cpu().numpy().item())) /
-                            str(int(d.id.cpu().numpy().item())) / f'{frame_idx}.jpg'
-                        ),
-                        BGR=True
-                    )
 
     if args.save_mot:
         print(f'MOT results saved to {yolo.predictor.mot_txt_path}')

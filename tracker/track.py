@@ -12,8 +12,8 @@ from boxmot.utils import ROOT, WEIGHTS
 from boxmot.utils.checks import TestRequirements
 from tracker.detectors import get_yolo_inferer
 
-__tr = TestRequirements()
-__tr.check_packages(('ultralytics @ git+https://github.com/mikel-brostrom/ultralytics.git', ))  # install
+#__tr = TestRequirements()
+#__tr.check_packages(('ultralytics @ git+https://github.com/mikel-brostrom/ultralytics.git', ))  # install
 
 from ultralytics import YOLO
 from ultralytics.data.utils import VID_FORMATS
@@ -79,8 +79,7 @@ def run(args):
         project=args.project,
         name=args.name,
         classes=args.classes,
-        imgsz=args.imgsz,
-        save_dir=False
+        imgsz=args.imgsz        
     )
 
     yolo.add_callback('on_predict_start', partial(on_predict_start, persist=True))

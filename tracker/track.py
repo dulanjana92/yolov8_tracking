@@ -94,7 +94,7 @@ def run(args):
 
     # store custom args in predictor
     yolo.predictor.custom_args = args
-
+    print(f'Working up to this point {yolo.predictor.mot_txt_path}')
     for frame_idx, r in enumerate(results):
         print(r)
         #if r.boxes.data.shape[1] == 7:

@@ -12,8 +12,8 @@ from boxmot.utils import ROOT, WEIGHTS
 from boxmot.utils.checks import TestRequirements
 from tracker.detectors import get_yolo_inferer
 
-#__tr = TestRequirements()
-#__tr.check_packages(('ultralytics @ git+https://github.com/mikel-brostrom/ultralytics.git', ))  # install
+__tr = TestRequirements()
+__tr.check_packages(('ultralytics @ git+https://github.com/mikel-brostrom/ultralytics.git', ))  # install
 
 from ultralytics import YOLO
 from ultralytics.data.utils import VID_FORMATS

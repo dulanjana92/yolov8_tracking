@@ -87,11 +87,13 @@ def run(args):
     # store custom args in predictor
     yolo.predictor.custom_args = args
     print(f'Working up to this point')
+    print(f"Video Formats: {VID_FORMATS}")
+    print(f"Source DT: {args.source}")
     for frame_idx, r in enumerate(results):
         print(f'running results')
         print(frame_idx)
         if r.boxes.data.shape[1] == 7:
-
+            
             if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
                 print(f"Save Dir: {yolo.predictor.save_dir}")
                 p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')

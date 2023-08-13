@@ -93,7 +93,7 @@ def run(args):
         print(f'running results')
         print(frame_idx)
         if r.boxes.data.shape[1] == 7:
-            
+            print("Predictions found")
             if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
                 print(f"Save Dir: {yolo.predictor.save_dir}")
                 p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')

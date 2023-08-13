@@ -12,7 +12,7 @@ def write_mot_results(txt_path, results, frame_idx):
     dont_care = torch.full((nr_dets, 1), -1)
     print(results)
     print(f"box count: {nr_dets}")
-    if nr_dets > 0 and results.boxes.id:
+    if nr_dets > 0:
         mot = torch.cat([
             frame_idx,
             results.boxes.id.unsqueeze(1).to('cpu'),

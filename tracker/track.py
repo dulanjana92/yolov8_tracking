@@ -93,8 +93,10 @@ def run(args):
         if r.boxes.data.shape[1] == 7:
 
             if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
+                print(f"Save Dir: {yolo.predictor.save_dir}")
                 p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')
                 yolo.predictor.mot_txt_path = p
+                print(f"Results Path: {yolo.predictor.mot_txt_path}")
             
             if args.save_mot:
                 write_mot_results(

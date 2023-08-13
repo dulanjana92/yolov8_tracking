@@ -92,34 +92,34 @@ def run(args):
     for frame_idx, r in enumerate(results):
         print(f'running results')
         print(frame_idx)
-        if r.boxes.data.shape[1] == 7:
-            print("Predictions found")
-            if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
-                print(f"Save Dir: {yolo.predictor.save_dir}")
-                p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')
-                yolo.predictor.mot_txt_path = p
-                print(f"Results Path: {yolo.predictor.mot_txt_path}")
-            
-            if args.save_mot:
-                write_mot_results(
-                    yolo.predictor.mot_txt_path,
-                    r,
-                    frame_idx,
-                )
+        #if r.boxes.data.shape[1] == 7:
+        print("Predictions found")
+        if yolo.predictor.source_type.webcam or args.source.endswith(VID_FORMATS):
+            print(f"Save Dir: {yolo.predictor.save_dir}")
+            p = yolo.predictor.save_dir / 'mot' / (args.source + '.txt')
+            yolo.predictor.mot_txt_path = p
+            print(f"Results Path: {yolo.predictor.mot_txt_path}")
+        
+        if args.save_mot:
+            write_mot_results(
+                yolo.predictor.mot_txt_path,
+                r,
+                frame_idx,
+            )
 
-            if args.save_id_crops:
-                for d in r.boxes:
-                    print('args.save_id_crops', d.data)
-                    save_one_box(
-                        d.xyxy,
-                        r.orig_img.copy(),
-                        file=(
-                            yolo.predictor.save_dir / 'crops' /
-                            str(int(d.cls.cpu().numpy().item())) /
-                            str(int(d.id.cpu().numpy().item())) / f'{frame_idx}.jpg'
-                        ),
-                        BGR=True
-                    )
+        if args.save_id_crops:
+            for d in r.boxes:
+                print('args.save_id_crops', d.data)
+                save_one_box(
+                    d.xyxy,
+                    r.orig_img.copy(),
+                    file=(
+                        yolo.predictor.save_dir / 'crops' /
+                        str(int(d.cls.cpu().numpy().item())) /
+                        str(int(d.id.cpu().numpy().item())) / f'{frame_idx}.jpg'
+                    ),
+                    BGR=True
+                )
 
     if args.save_mot:
         print(f'MOT results saved to {yolo.predictor.mot_txt_path}')
